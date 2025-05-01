@@ -6,17 +6,17 @@ from django.contrib.auth.forms import UserCreationForm
 
 def product_list(request):
     products = Product.objects.filter(available=True)
-    return render(request, 'shop/product_list.html', {'products': products})
+    return render(request, 'product_list.html', {'products': products})
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, available=True)
-    return render(request, 'shop/product_detail.html', {'product': product})
+    return render(request, 'product_detail.html', {'product': product})
 
 @login_required
 def cart_detail(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     items = CartItem.objects.filter(cart=cart)
-    return render(request, 'shop/cart_detail.html', {'cart_items': items})
+    return render(request, 'cart_detail.html', {'cart_items': items})
 
 @login_required
 def cart_add(request, product_id):
@@ -58,7 +58,7 @@ def checkout(request):
         )
 
     cart_items.delete() 
-    return render(request, 'shop/checkout.html', {'order': order})
+    return render(request, 'checkout.html', {'order': order})
 
 
 def register(request):
