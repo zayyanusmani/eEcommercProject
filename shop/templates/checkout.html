@@ -1,7 +1,66 @@
 {% extends "base.html" %}
+{% load shop_extras %}
+
 {% block content %}
-<h2>Order Placed!</h2>
-<p>Your order has been placed successfully.</p>
-<p><strong>Order Total:</strong> ${{ order.total }}</p>
-<a href="{% url 'product_list' %}" class="btn btn-success">Continue Shopping</a>
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">Order Confirmation</h2>
+        <div class="alert alert-success">
+            <h4 class="alert-heading">Thank you for your order!</h4>
+            <p>Your order has been successfully placed.</p>
+        </div>
+
+        <h4 class="mt-4">Order Details</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <tr>
+                    <th>Order Number:</th>
+                    <td>#{{ order.id }}</td>
+                </tr>
+                <tr>
+                    <th>Date:</th>
+                    <td>{{ order.created_at|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Status:</th>
+                    <td><span class="badge bg-info">{{ order.status }}</span></td>
+                </tr>
+                <tr>
+                    <th>Total Amount:</th>
+                    <td><strong>Rs.{{ order.total }}</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <h4 class="mt-4">Order Items</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>Rs.{{ item.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>Rs.{{ item.price|multiply:item.quantity }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'product_list' %}" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,16 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>All Products</h2>
+<h2 class="mb-4">{% if request.GET.q %}Search Results for "{{ request.GET.q }}"{% else %}All Products{% endif %}</h2>
+
 <div class="row">
     {% for product in products %}
         <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p>{{ product.description|truncatewords:20 }}</p>
-                    <strong>${{ product.price }}</strong><br>
-                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-primary mt-2">View</a>
+                    <p class="text-muted small">{{ product.category.name }}</p>
+                    <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="text-primary mb-0">Rs.{{ product.price }}</h5>
+                        {% if product.available %}
+                            <span class="badge bg-success">In Stock</span>
+                        {% else %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                        {% endif %}
+                    </div>
                 </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-primary w-100">
+                        <i class="bi bi-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No products found{% if request.GET.q %} matching your search{% endif %}.
             </div>
         </div>
     {% endfor %}

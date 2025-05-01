@@ -3,9 +3,19 @@ from .models import Product, Cart, CartItem, Category, Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 
 def product_list(request):
-    products = Product.objects.filter(available=True)
+    query = request.GET.get('q')
+    if query:
+        products = Product.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query),
+            available=True
+        )
+    else:
+        products = Product.objects.filter(available=True)
     return render(request, 'product_list.html', {'products': products})
 
 def product_detail(request, slug):
@@ -16,7 +26,8 @@ def product_detail(request, slug):
 def cart_detail(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     items = CartItem.objects.filter(cart=cart)
-    return render(request, 'cart_detail.html', {'cart_items': items})
+    total = sum(item.product.price * item.quantity for item in items)
+    return render(request, 'cart_detail.html', {'cart_items': items, 'total': total})
 
 @login_required
 def cart_add(request, product_id):

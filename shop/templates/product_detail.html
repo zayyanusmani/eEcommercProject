@@ -1,8 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ product.name }}</h2>
-<p>{{ product.description }}</p>
-<p><strong>Price:</strong> ${{ product.price }}</p>
-<a href="{% url 'cart_add' product.id %}" class="btn btn-success">Add to Cart</a>
-<a href="{% url 'product_list' %}" class="btn btn-secondary">Back</a>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">{{ product.name }}</h2>
+                <p class="text-muted">Category: {{ product.category.name }}</p>
+                <h3 class="text-primary">Rs.{{ product.price }}</h3>
+                <p class="card-text">{{ product.description }}</p>
+                <p>
+                    <strong>Availability:</strong>
+                    {% if product.available %}
+                        <span class="text-success">In Stock ({{ product.stock }} available)</span>
+                    {% else %}
+                        <span class="text-danger">Out of Stock</span>
+                    {% endif %}
+                </p>
+                {% if product.available %}
+                    <form action="{% url 'cart_add' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4>Product Details</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Created:</strong> {{ product.created_at|date:"F d, Y" }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Last Updated:</strong> {{ product.updated_at|date:"F d, Y" }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-4">
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Products
+    </a>
+</div>
 {% endblock %}
