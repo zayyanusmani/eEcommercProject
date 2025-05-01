@@ -1,0 +1,8 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<h2>{{ product.name }}</h2>
+<p>{{ product.description }}</p>
+<p><strong>Price:</strong> ${{ product.price }}</p>
+<a href="{% url 'cart_add' product.id %}" class="btn btn-success">Add to Cart</a>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

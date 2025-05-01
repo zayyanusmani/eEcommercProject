@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Cart, CartItem, Category, Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.contrib.auth.forms import UserCreationForm
 
 def product_list(request):
     products = Product.objects.filter(available=True)
@@ -58,3 +59,14 @@ def checkout(request):
 
     cart_items.delete() 
     return render(request, 'shop/checkout.html', {'order': order})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redirect to login after registration
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
